@@ -12,4 +12,11 @@ void main() {
 
   number = 'dong';
   print(number);
+
+  dynamic bool1 = true;
+  print(bool1);
+
+  bool1 = false;
+  bool1 = 'true';
+  bool1 = 67;
 }
