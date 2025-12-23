@@ -30,4 +30,32 @@ void main() {
   String? name3 = 'won';
   print(name3);
   print(name3!);
+
+  name3 = null;
+  print(name3);
+  // print(name3!);  // 실행시 오류
+
+  int? num1;
+  int num2 = 3;
+  // print(num1 + num2);  // 타입이 달라서 build 오류
+  // print(num1! + num2);  // 오류 num1이 null값 연산 불가
+
+  // ?? : null일 때 대체값 사용. 변수의 값은 변하지 않음
+  print(num1 ?? 5);
+  print(num1 ?? 7 + num2);
+  // 대체적으로 괄호로 묶어 사용 => print((num1 ?? 7) + num2);
+  print(num1);
+
+  // if문을 null safety를 이용하여 ?. 으로 사용할 수 있음
+  String? name4 = "john";
+  if(name4 != null) {
+    print(name4.isNotEmpty);
+  }
+
+  print(name4?.isEmpty);
+  print(name4?.isNotEmpty);
+
+  name4 = null;
+  print(name4?.isEmpty);
+  print(name4?.isNotEmpty);
 }
