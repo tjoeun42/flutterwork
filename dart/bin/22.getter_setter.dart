@@ -23,7 +23,34 @@ class Idol {
   }
 
   // getter
-  String get FirstMember {
+  String get firstMember {
     return members[0];
   }
+
+  // setter : 파라미터는 무조건 1개만 받을 수 있다
+  set firstMember(String name) {
+    this.members[0] = name;
+  }
+
+  // final이 붙어서 아예 변경 불가
+  /*
+  set nameSet(String name) {
+    this.name = name;
+  }
+  */
+}
+
+void main() {
+  Idol idol1 = Idol('블랙핑크', ['지수', '제니', '리사', '로제']);
+  Idol idol2 = Idol.fromList([['정국','뷔','지민','진'], 'BTS']);
+  print(idol1.firstMember);
+  print(idol2.firstMember);
+
+  print('-----------------------');
+
+  // idol1.firstMember('나나');  오류
+  idol1.firstMember = '나나';
+  idol2.firstMember = '슈가';
+  print(idol1.firstMember);
+  print(idol2.firstMember);
 }
