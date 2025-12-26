@@ -21,9 +21,6 @@ void main() async {
   // 수정 : 일반 함수를 Future함수로 변환 => Future<void>
   await addNumbers(1, 1);
   await addNumbers(2, 2);
-
-  // Future<void> 는 저장 또는 출력 가능
-  final result = await addNumbers(3, 3);
 }
 
 Future<void> addNumbers(int num1, int num2) async {
