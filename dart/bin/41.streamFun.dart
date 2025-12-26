@@ -50,6 +50,7 @@ Stream<int> calculate(int num) async* {
 }
  */
 
+/*
 // 1개가 끝나고 2번째거 실행되게
 void main() {
   playAllStream().listen((val) {
@@ -69,7 +70,28 @@ Stream<int> calculate(int num) async* {
     await Future.delayed(Duration(seconds: 1));
   }
 }
+*/
 
 // 카운트하기 5, 4, 3, 2, 1
+void main() async {
+  print('카운트 시작');
+  /*
+  await countStream().listen((value) {
+    print(value);
+  });
+  */
 
+  // for는 꼭 필요하지 않지만 Stream을 순서대로 받는 기본 문법
+  await for(int value in countStream()) {
+    print(value);
+  }
+
+  print('카운트 완료');
+}
+Stream<int> countStream() async* {
+  for(int i=5; i>0; i--) {
+    await Future.delayed(Duration(seconds: 1));
+    yield i;
+  }
+}
 
