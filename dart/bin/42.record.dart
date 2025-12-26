@@ -49,7 +49,7 @@ void main() {
 
   print('-------------------------------');
 
-  // 3. 출력
+  // 5. 출력
   final result4 = getGirlGroup();
   print(result4);
   print(result4.$1);
@@ -80,7 +80,6 @@ List<(String, int)> getNewJeansWithType() {
 List<(String name, int age)> getNewJeansWithType2() {
   return [('민지', 20), ('혜린',19)];
 }
-
 
 //4.
 List<({String name, int age})> getNewJeansWithType3() {
