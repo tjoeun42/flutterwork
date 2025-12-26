@@ -87,11 +87,11 @@ class Cat extends AnimalMixin with AnimalMixin2, AnimalMixin3 {}
 정리
 
 키워드           | extends  | implements | with | 외부 상속
-class           |    o     |    o       |  o   |    o
-final class     |    x     |    x       |  x   |    x
-base class      |    o     |    x       |  x   |    x
-interface class |    x     |    o       |  x   |    o
-sealed class    |    o     |    x       |  x   |    x
-abstract class  |    o     |    o       |  o   |    o
-mixin class     |    o     |    o       |  o   |    o
+class           |    o     |      o     |  o   |    o
+final class     |    x     |      x     |  x   |    x
+base class      |    o     |      x     |  x   |    x
+interface class |    x     |      o     |  x   |    o
+sealed class    |    o     |      x     |  x   |    x
+abstract class  |    o     |      o     |  o   |    o
+mixin class     |    o     |      o     |  o   |    o
 */

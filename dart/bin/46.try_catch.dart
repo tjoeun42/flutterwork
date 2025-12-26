@@ -37,3 +37,32 @@ void main() {
 }
  */
 
+void main() {
+  try {
+    tjoeun();
+  } catch(e) {
+    print('error : $e');
+  }
+}
+
+void tjoeun() {
+  try {
+    // throw Exception('오류 발생 시킴!!');
+    throw CustomException('customException을 발생 시킴');
+  } catch(e) {
+    rethrow;
+  }
+}
+
+// 사용자 정의 예외 클래스
+class CustomException implements Exception {
+  final String message;
+
+  CustomException(this.message);
+
+  @override
+  String toString() {
+    return message;
+  }
+}
+

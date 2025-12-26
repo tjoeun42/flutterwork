@@ -75,16 +75,16 @@ Stream<int> calculate(int num) async* {
 // 카운트하기 5, 4, 3, 2, 1
 void main() async {
   print('카운트 시작');
-  /*
   await countStream().listen((value) {
     print(value);
   });
-  */
 
+/*
   // for는 꼭 필요하지 않지만 Stream을 순서대로 받는 기본 문법
   await for(int value in countStream()) {
     print(value);
   }
+*/
 
   print('카운트 완료');
 }
