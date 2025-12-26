@@ -19,5 +19,19 @@ void main() {
   print(people);
   print('----------------------------------');
 
-  people.map((x) => Person(name: x['name']!, group: x['group']!));
+  var personPelple = people.map((x) => Person(name: x['name']!, group: x['group']!));
+  print(personPelple);
+
+  var result = people
+      .map((x) => Person(name: x['name']!, group: x['group']!))
+      .where((x) => x.group == 'BTS');
+  print(result);
+
+  print('==========================================');
+
+  var result2 = people
+      .map((x) => Person(name: x['name']!, group: x['group']!))
+      .where((x) => x.group == 'BTS')
+      .fold<int>(0, (prev, next) => prev + next.name.length);
+  print(result2);
 }
