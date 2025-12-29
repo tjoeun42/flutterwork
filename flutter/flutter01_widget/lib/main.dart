@@ -1,14 +1,17 @@
 import 'package:flutter/material.dart';
-/*
-* Layout
-  - Scaffold() : 화면을 top, body, bottom로 나누어줌
-  - Row() : 위젯들을 가로로 배치
-  - Column() : 위젯들을 세로로 배치
- */
+// SizeBox() : 간단한 박스
+//  - 속성 : width, height, child 3개만 있음.
+//    > 많은 속성이 필요하면 Container사용
+
+// style() : 위젯에 대한 스타일 넣기
+
 void main() {
   runApp(const MyApp());
 }
+
 /*
+// SizeBox() 사용
+// Text()위젯에 스타일 넣어주기
 class MyApp extends StatelessWidget {
   const MyApp({super.key});
 
@@ -16,34 +19,19 @@ class MyApp extends StatelessWidget {
   Widget build(BuildContext context) {
     return MaterialApp(
       home: Scaffold(
-        appBar: AppBar(title: Text('앱제목'), backgroundColor: Color(0xfff3edf7)),  // top부분
-        body: Text('본문 내용'),     // body부분 : 필수
-        bottomNavigationBar: BottomAppBar(child: Text('하단바')),  // bottom부분
-      ),
-    );
-  }
-}
-*/
-
-/*
-class MyApp extends StatelessWidget {
-  const MyApp({super.key});
-
-  @override
-  Widget build(BuildContext context) {
-    return MaterialApp(
-      home: Scaffold(
-        body: Row(
-          // 메인축 정렬
-          mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-          // 메인의 반대축 정렬
-          // crossAxisAlignment: CrossAxisAlignment.center, // 안되는 이유는 icon의 높이만큼만 자리차지하기 때문
-          crossAxisAlignment: CrossAxisAlignment.stretch,   // 이거 하나만 됨.
-          children: [
-            Icon(Icons.ac_unit),
-            Icon(Icons.adb_rounded),
-            Icon(Icons.account_balance)
-          ],
+        appBar: AppBar(
+            title: Text('예제'),
+            backgroundColor: Color(0xfff3edf7)
+        ),
+        body: SizedBox(
+          // Text()위젯에 스타일 넣어주기
+          child: Text('안녕',
+            style: TextStyle(
+              color: Color(0xff04cece),
+              fontSize: 50,
+              fontWeight: FontWeight.w700
+            ),
+          ),
         ),
       ),
     );
@@ -51,6 +39,8 @@ class MyApp extends StatelessWidget {
 }
 */
 
+/*
+// 아이콘 스타일
 class MyApp extends StatelessWidget {
   const MyApp({super.key});
 
@@ -58,20 +48,53 @@ class MyApp extends StatelessWidget {
   Widget build(BuildContext context) {
     return MaterialApp(
       home: Scaffold(
-        body: Column(
-          mainAxisAlignment: MainAxisAlignment.spaceAround,
-          crossAxisAlignment: CrossAxisAlignment.stretch,
-          children: [
-            Icon(Icons.ac_unit),
-            Icon(Icons.adb_rounded),
-            Icon(Icons.account_balance)
-          ],
+        appBar: AppBar(
+            title: Text('예제'),
+            backgroundColor: Color(0xfff3edf7)
+        ),
+        body: SizedBox(
+          child: Icon(
+            Icons.ac_unit_outlined,
+            color: Colors.pinkAccent,
+            size: 50,   // 기본사이즈 : 24
+          ),
+        ),
+      ),
+    );
+  }
+}*/
+
+/*
+// 버튼
+//  - TextButton(), IconButton(), ElevatedButton()
+class MyApp extends StatelessWidget {
+  const MyApp({super.key});
+
+  @override
+  Widget build(BuildContext context) {
+    return MaterialApp(
+      home: Scaffold(
+        appBar: AppBar(
+            title: Text('예제'),
+            backgroundColor: Color(0xfff3edf7)
+        ),
+        body: SizedBox(
+          // child: TextButton(onPressed: (){}, child: Text('TextButton')),
+          // child: ElevatedButton(onPressed: (){}, child: Text('ElevatedButton')),
+          child: IconButton(
+              onPressed: (){
+                // 클릭시 실행할 코드
+              },
+              icon: Icon(
+                Icons.favorite,
+                size: 50,
+                color: Colors.purple,
+              )
+          ),
         ),
       ),
     );
   }
 }
-
-
-
+*/
 
