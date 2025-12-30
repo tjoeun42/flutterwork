@@ -1,9 +1,16 @@
 import 'package:flutter/material.dart';
 /*
-  * 자식이 부모의 변수에 값을 사용하고 싶을 때
-    1. 부모가 자식에게 보내기
-    2. 자식은 부모가 보내준 변수 등록
-    3. 자식이 사용
+* dialog 창
+
+* context : 커스텀위젯을 만들때마다 자동으로 하나가 만들어짐
+   - 부모위젯들의 정보를 담고 있는 변수
+   - 그리고 그 부모에는 반드시 MaterialApp()이 들어 있어야됨
+
+  > context를 반드시 매개변수로 받아야 하는 위젯들
+    - showDialog()
+    - Navigator()
+    - Theme.of()
+    - Scaffold.of()
  */
 void main() {
   runApp(
@@ -22,8 +29,6 @@ class MyApp extends StatefulWidget {
 
 class _MyAppState extends State<MyApp> {
   var name = ['이기쁨', '채규태', '이고잉', '송미영', '더조은'];
-  // 0. 자식에게 보낼줄 변수 정의
-  var num = 7;
 
   @override
   Widget build(BuildContext context) {
@@ -34,8 +39,7 @@ class _MyAppState extends State<MyApp> {
             showDialog(
               context: context,
               builder: (context) {
-// 1. 부모가 자식에게 보내기
-                return CustomDialog(stateVar : num);
+                return CustomDialog();
               }
             );
           },
@@ -63,9 +67,7 @@ class _MyAppState extends State<MyApp> {
 }
 
 class CustomDialog extends StatelessWidget {
-  // 2.  등록하기
-  const CustomDialog({super.key, this.stateVar});
-  final stateVar;
+  const CustomDialog({super.key});
 
   @override
   Widget build(BuildContext context) {
@@ -76,8 +78,7 @@ class CustomDialog extends StatelessWidget {
         child: Column(
           children: [
             TextField(),
-            // 3. 사용하기
-            TextButton(onPressed: (){}, child: Text(stateVar.toString())),
+            TextButton(onPressed: (){}, child: Text('완료')),
             TextButton(onPressed: (){ Navigator.pop(context); }, child: Text('취소'))
           ],
         ),
