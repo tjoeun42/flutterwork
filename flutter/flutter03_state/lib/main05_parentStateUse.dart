@@ -1,9 +1,9 @@
 import 'package:flutter/material.dart';
 /*
-  * 자식이 부모의 state 변경하기
-    1. 부모가 수정 함수 만들기
-    2. 자식에게 state 보내기
-    3. 자식은 등록하고 사용
+  * 자식이 부모의 변수에 값을 사용하고 싶을 때
+    1. 부모가 자식에게 보내기
+    2. 자식은 부모가 보내준 변수 등록
+    3. 자식이 사용
  */
 void main() {
   runApp(
@@ -22,15 +22,9 @@ class MyApp extends StatefulWidget {
 
 class _MyAppState extends State<MyApp> {
   var name = ['이기쁨', '채규태', '이고잉', '송미영', '더조은'];
-// 1. state 만들기
-  var total = 5;    // 친구수
+  // 0. 자식에게 보낼줄 변수 정의
+  var num = 7;
 
-  // 3. 수정 함수 만들기
-  addFriend() {
-    setState(() {
-      total++;
-    });
-  }
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -40,8 +34,8 @@ class _MyAppState extends State<MyApp> {
             showDialog(
               context: context,
               builder: (context) {
-// 4. 자식에게 함수 보내기
-                return CustomDialog(friendState : addFriend);
+// 1. 부모가 자식에게 보내기
+                return CustomDialog(stateVar : num, nameState : name);
               }
             );
           },
@@ -50,8 +44,7 @@ class _MyAppState extends State<MyApp> {
         appBar: AppBar(
           backgroundColor: Color(0xfff3edf7),
           leading: Icon(Icons.list),
-// 2. 출력 : CustomDialog에서 완료 버튼을 누르면 숫자가 1증가
-          title: Text(total.toString()),
+          title: Text('주소록'),
           actions: [Icon(Icons.search), Icon(Icons.share)],
         ),
         body: ListView.builder(
@@ -70,9 +63,10 @@ class _MyAppState extends State<MyApp> {
 }
 
 class CustomDialog extends StatelessWidget {
-  // 5.  등록하기
-  const CustomDialog({super.key, this.friendState});
-  final friendState;
+  // 2.  등록하기
+  const CustomDialog({super.key, this.stateVar, this.nameState});
+  final stateVar;
+  final nameState;
 
   @override
   Widget build(BuildContext context) {
@@ -83,13 +77,10 @@ class CustomDialog extends StatelessWidget {
         child: Column(
           children: [
             TextField(),
-            // 6. 사용하기
-            TextButton(onPressed: (){
-                friendState();
-                Navigator.pop(context);
-              },
-              child: Text('완료')
-            ),
+            // 3. 사용하기
+            // Text(nameState[1]),
+            Text(nameState.toString()),
+            TextButton(onPressed: (){}, child: Text(stateVar.toString())),
             TextButton(onPressed: (){ Navigator.pop(context); }, child: Text('취소'))
           ],
         ),
