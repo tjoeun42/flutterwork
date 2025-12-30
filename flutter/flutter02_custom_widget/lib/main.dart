@@ -39,6 +39,8 @@ class MyApp extends StatelessWidget {
 }
 */
 
+/*
+
 class MyApp extends StatelessWidget {
   const MyApp({super.key});
 
@@ -46,7 +48,86 @@ class MyApp extends StatelessWidget {
   Widget build(BuildContext context) {
     return MaterialApp(
       home: Scaffold(
-        appBar: AppBar(backgroundColor: Color(value),),
+        appBar: AppBar(backgroundColor: Color(0xfff3edf7)),
+        body: ListView(
+          children: [
+            Column(
+              children: [
+                Row(
+                  children: [
+                    Image.asset('assets/user1.png', width: 100),
+                    SizedBox(width: 20),
+                    Text('김여성', style: TextStyle(fontSize: 30))
+                  ],
+                ),
+                Row(
+                  children: [
+                    Image.asset('assets/user2.png', width: 100),
+                    SizedBox(width: 20),
+                    Text('이남성', style: TextStyle(fontSize: 30))
+                  ],
+                ),
+              ],
+            ),
+          ],
+        )
+      ),
+    );
+  }
+}
+*/
+
+/*
+
+// ListTitle : 아이콘, 제목, 부제목 등을 손쉽게 배치
+class MyApp extends StatelessWidget {
+  const MyApp({super.key});
+
+  @override
+  Widget build(BuildContext context) {
+    return MaterialApp(
+      home: Scaffold(
+        appBar: AppBar(backgroundColor: Color(0xfff3edf7)),
+        body: ListView(
+          children: [
+            ListTile(
+              leading: Image.asset('assets/user1.png'),
+              title: Text('김여성')
+            ),
+            ListTile(
+                leading: Image.asset('assets/user2.png'),
+                title: Text('이남성')
+            )
+          ],
+        ),
+      ),
+    );
+  }
+}
+*/
+
+// ListView.builder() : ListView를 반복해줌
+class MyApp extends StatelessWidget {
+  const MyApp({super.key});
+
+  @override
+  Widget build(BuildContext context) {
+    return MaterialApp(
+      home: Scaffold(
+        appBar: AppBar(backgroundColor: Color(0xfff3edf7)),
+        body: ListView.builder(
+          itemCount: 100,  // 반복 횟수
+          itemBuilder: (context, index) {
+            // return Text('반복됨');
+            // return Text(index.toString());  // Text() 문자만 가능. 숫자->문자로 변환
+            // return Text('반복횟수 : ' + index.toString());
+            // return Text('반복횟수 : $index');
+            return ListTile(
+              leading: Image.asset('assets/user1.png'),
+              title: Text('친구 $index')
+            );
+          }
+        ),
       ),
     );
   }
