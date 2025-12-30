@@ -1,5 +1,8 @@
 import 'package:flutter/material.dart';
-
+/*
+* input 데이터 사용
+  TextField()위젯은 저장되지 않음. 변수에 저장해야됨
+ */
 void main() {
   runApp(
     MaterialApp(

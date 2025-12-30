@@ -1,5 +1,10 @@
 import 'package:flutter/material.dart';
-
+/*
+  * 자식이 부모의 state 변경하기
+    1. 부모가 수정 함수 만들기
+    2. 자식에게 state 보내기
+    3. 자식은 등록하고 사용
+ */
 void main() {
   runApp(
     MaterialApp(
@@ -17,8 +22,10 @@ class MyApp extends StatefulWidget {
 
 class _MyAppState extends State<MyApp> {
   var name = ['이기쁨', '채규태', '이고잉', '송미영', '더조은'];
-  var total = 5;
+// 1. state 만들기
+  var total = 5;    // 친구수
 
+  // 3. 수정 함수 만들기
   addFriend() {
     setState(() {
       total++;
@@ -33,6 +40,7 @@ class _MyAppState extends State<MyApp> {
             showDialog(
               context: context,
               builder: (context) {
+// 4. 자식에게 함수 보내기
                 return CustomDialog(friendState : addFriend);
               }
             );
@@ -42,12 +50,13 @@ class _MyAppState extends State<MyApp> {
         appBar: AppBar(
           backgroundColor: Color(0xfff3edf7),
           leading: Icon(Icons.list),
+// 2. 출력 : CustomDialog에서 완료 버튼을 누르면 숫자가 1증가
           title: Text(total.toString()),
           actions: [Icon(Icons.search), Icon(Icons.share)],
         ),
         body: ListView.builder(
             padding: EdgeInsets.all(10),
-            itemCount: name.length,
+            itemCount: 5,
             itemBuilder: (context, index) {
               return ListTile(
                 leading: Image.asset('assets/user${index+1}.png'),
@@ -61,15 +70,9 @@ class _MyAppState extends State<MyApp> {
 }
 
 class CustomDialog extends StatelessWidget {
-  // 1. const 지우기
-  /* const */ CustomDialog({super.key, this.friendState});
+  // 5.  등록하기
+  const CustomDialog({super.key, this.friendState});
   final friendState;
-
-  // 2. 변수 만들기
-  var inputData = TextEditingController();
-
-  // 5. onChanged를 이용하여 변수에 저장하기
-  var inputData2 = '';
 
   @override
   Widget build(BuildContext context) {
@@ -79,21 +82,14 @@ class CustomDialog extends StatelessWidget {
         height: 300,
         child: Column(
           children: [
-            /*
-// 3. 변수에 저장 (constroller : 변수명)  : 실시간 출력 안됨
-            TextField(controller: inputData),
+            TextField(),
+            // 6. 사용하기
             TextButton(onPressed: (){
-                print(inputData.text);
+                friendState();
+                Navigator.pop(context);
               },
-              child: Text('콘솔에 입력값 출력')
+              child: Text('완료')
             ),
-            */
-// 4. onChanged 사용하여 실시간 으로 출력 넣기
-            // TextField(onChanged: (text){ print(text);}),
-
-// 5. onChanged 사용하여 실시간으로 변수에 저장하기
-            TextField(onChanged: (text){ inputData2 = text; },),
-            TextButton(onPressed: (){friendState(); print(inputData2); }, child: Text('완료')),
             TextButton(onPressed: (){ Navigator.pop(context); }, child: Text('취소'))
           ],
         ),
