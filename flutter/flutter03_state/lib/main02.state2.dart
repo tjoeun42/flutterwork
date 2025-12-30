@@ -14,8 +14,6 @@ class MyApp extends StatefulWidget {
 class _MyAppState extends State<MyApp> {
   var num = 1;
   var name = ['이기쁨', '채규태', '이고잉', '송미영', '더조은'];
-  // 1. state 만들기
-  var like = [0, 0, 0, 0, 0];
 
   @override
   Widget build(BuildContext context) {
@@ -35,25 +33,22 @@ class _MyAppState extends State<MyApp> {
           title: Text('주소록'),
           actions: [Icon(Icons.search), Icon(Icons.share)],
         ),
-        body: ListView.builder(
-            padding: EdgeInsets.all(10),
-            itemCount: 5,
-            itemBuilder: (context, index) {
-              return ListTile(
-                // 2. 이미지를 글자 위젯바꾸기
-                leading: Text(like[index].toString()),
-                title: Text(name[index]),
-                // 3. 버튼 생성 -> setState()에 재렌더링될 값 넣기
-                trailing: ElevatedButton(
-                  onPressed: () {
-                    setState(() {
-                      like[index]++;
-                    });
-                  },
-                  child: Text('좋아요')
-                ),
-              );
-            },
+        // 위, 아래 간격 넣을려면
+        body: ListView.separated(
+          padding: EdgeInsets.all(10),
+          itemCount: 5,
+          itemBuilder: (context, index) {
+            return ListTile(
+                leading: Image.asset('assets/user${index+1}.png'),
+                title: Text(name[index])
+            );
+          },
+          /*
+          separatorBuilder: (context, index) {
+              return SizedBox(height: 10);
+          },
+          */
+          separatorBuilder:(context, index) => SizedBox(height: 10)
         ),
         bottomNavigationBar: CustomBottom(),
       ),
