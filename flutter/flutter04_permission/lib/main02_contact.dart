@@ -18,6 +18,7 @@ class MyApp extends StatefulWidget {
 }
 
 class _MyAppState extends State<MyApp> {
+  // 권한 얻어오기
   getPermission() async {
     var status = await Permission.contacts.status;
     if(status.isGranted) {
@@ -35,8 +36,9 @@ class _MyAppState extends State<MyApp> {
     }
   }
 
-  List<Contact> name = [];    // List<dynamic> 타입이 됨
+  var name = [];    // List<dynamic> 타입이 됨
 
+  // 1. 함수 추가
   addName() async {
     var contacts = await FlutterContacts.getContacts(withProperties: true);
     setState(() {
@@ -53,6 +55,7 @@ class _MyAppState extends State<MyApp> {
           showDialog(
               context: context,
               builder: (context) {
+                // 2. 넘겨주기
                 return CustomDialog(addName : addName);
               }
           );
@@ -70,9 +73,8 @@ class _MyAppState extends State<MyApp> {
         itemCount: name.length,
         itemBuilder: (context, index) {
           return ListTile(
-            // leading: Image.asset('assets/user${index+1}.png'),
-            title: Text(name[index].displayName ?? '이름없음'),
-            subtitle: Text(name[index].phones.isNotEmpty ? name[index].phones[0].number : '전화번호 없음'),
+            leading: Image.asset('assets/user${index+1}.png'),
+            title: Text(name[index].displayName),
           );
         },
       ),
