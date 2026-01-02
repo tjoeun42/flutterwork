@@ -13,11 +13,7 @@ void main() {
   runApp(
     MaterialApp(
       theme: style.theme,
-      initialRoute: '/',
-      routes: {
-        '/' : (context) => MyApp(),
-        '/detail' : (context) => Upload(),
-      },
+      home: const MyApp(),
     )
   );
 }
@@ -34,6 +30,13 @@ class _MyAppState extends State<MyApp> {
   var feedItems = [];
   // 이미지 저장공간 만들기
   var userImage;
+  var userContent;  // 사용자로부터 입력받아서 저장
+
+  setUserContent(newContent) {
+    setState(() {
+      userContent = newContent;
+    });
+  }
 
   @override
   void initState() {
@@ -59,6 +62,21 @@ class _MyAppState extends State<MyApp> {
     });
   }
 
+  addMyData() {
+    var myData = {
+      "id": 50,
+      "image": userImage,
+      "likes": 0,
+      "date": "Jun 02",
+      "content": userContent,
+      "liked": false,
+      "user": "John Kim"
+    };
+    setState(() {
+      feedItems.insert(0, myData);
+    });
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -74,12 +92,12 @@ class _MyAppState extends State<MyApp> {
                   userImage = File(image.path);
                 });
               }
-              // 이미지를 띄우려면
-              // Image.file(userImage)
-
-
-              // picker.pickImage(source: ImageSource.camera)
-              Navigator.pushNamed(context, '/detail');
+              // picker.pickImage(source: ImageSource.camera)  // 카메라로 직접 찍기
+              Navigator.push(context, MaterialPageRoute(builder: (context) => Upload(
+                userImage: userImage,
+                setUserContent: setUserContent,
+                addMyData : addMyData
+              )));
             },
             icon: Icon(Icons.add_box_outlined)
           )
@@ -149,13 +167,17 @@ class _HomeState extends State<Home> {
       }
     });
   }
+  
   @override
   Widget build(BuildContext context) {
     if(widget.feedItems.isNotEmpty) {
       return ListView.builder(itemCount: widget.feedItems.length, controller: scroll, itemBuilder: (c, i) {
         return Column(
           children: [
-            Image.network(widget.feedItems[i]['image']),
+            widget.feedItems[i]['image'].runtimeType == String 
+            ? Image.network(widget.feedItems[i]['image'])
+            : Image.file(widget.feedItems[i]['image'], height: 250, width: double.infinity, fit: BoxFit.cover),
+
             Container(
               padding: EdgeInsets.all(20),
               width: double.infinity,
@@ -179,15 +201,29 @@ class _HomeState extends State<Home> {
 }
 
 class Upload extends StatelessWidget {
-  const Upload({super.key});
+  const Upload({super.key, this.userImage, this.setUserContent, this.addMyData});
+  final userImage;
+  final setUserContent;
+  final addMyData;
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(),
+      appBar: AppBar(
+        actions: [
+          IconButton(onPressed: (){
+            addMyData();
+            Navigator.pop(context);
+          }, icon: Icon(Icons.send))
+        ],
+      ),
       body: Column(
         children: [
+          Image.file(userImage),
           Text('이미지 업로드 화면'),
+          TextField(onChanged: (text) {
+            setUserContent(text);
+          }),
           IconButton(onPressed: (){ Navigator.pop(context); }, icon: Icon(Icons.close))
         ],
       ),
