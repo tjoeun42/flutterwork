@@ -1,7 +1,5 @@
 import 'package:flutter/material.dart';
 import './style.dart' as style;
-import 'package:http/http.dart' as http;
-import 'dart:convert';
 
 void main() {
   runApp(
@@ -21,32 +19,6 @@ class MyApp extends StatefulWidget {
 
 class _MyAppState extends State<MyApp> {
   var tab = 0;
-  /*
-  @override
-  void initState() async {  // initState는 async를 쓸 수 없게 막아놨음
-    super.initState();
-    var result = await http.get(Uri.parse('https://itwon.store/flutter/data/data.json'));
-    print('웹상의 json 출력 : ${result.body}');
-  }
-  */
-
-  @override
-  void initState() {
-    super.initState();
-    getData();
-  }
-
-  getData() async {
-    var result = await http.get(Uri.parse('https://itwon.store/flutter/data/data.json'));
-    // print(result.body);
-
-    // [{},{},{}] : json타입 -> List객체로 변환 [{map으로 들어옴},..]
-    print(jsonDecode(result.body));
-
-    var feedItems = jsonDecode(result.body);
-    print(feedItems[0]['user']);
-  }
-
 
   @override
   Widget build(BuildContext context) {
