@@ -2,10 +2,16 @@ import 'package:flutter/material.dart';
 import './style.dart' as style;
 import 'package:http/http.dart' as http;
 import 'dart:convert';
-import 'package:flutter/rendering.dart';    // 스크롤관련 유용한 함수들이 들어 있음.
+import 'package:flutter/rendering.dart';
 
-// * 무한 스크롤 : 화면의 맨 하단에 닿았으면 데이터를 서버에게 가져와서 보여주는 역할
-
+/*
+* Navigator : 화면간의 이동
+  - Navigator.push(context, route) : 새로운 화면을 스택에 추가
+  - Navigator.pop(context) : 현재 화면을 스택에서 제거하면 이전화면이 보임.
+  - Navigator.pushNamed(context, routeName) : 이름으로 등록된 경로로 이동
+  - Navigaotr.pushReplacement(context, route) : 현재 화면을 새 화면으로 교체
+  - Navigator.popUntil(context, predicate) : 특정 조건을 만족할 때까지 뒤로 감
+ */
 void main() {
   runApp(
       MaterialApp(
@@ -33,7 +39,6 @@ class _MyAppState extends State<MyApp> {
   }
 
   getData() async {
-    // await Future.delayed(Duration(seconds: 2));
     var result = await http.get(Uri.parse('https://itwon.store/flutter/data/data.json'));
     if(result.statusCode == 200) {
       var result2 = jsonDecode(result.body);
@@ -45,16 +50,11 @@ class _MyAppState extends State<MyApp> {
     }
   }
 
-  // feedItems 뒤에 하나 추가
   addData(a) {
     setState(() {
-      feedItems.addAll(a);  // 리스트를 펼쳐서 넣음.
+      feedItems.addAll(a);
     });
   }
-  /*
-  add() : 리스트 그대로 넣어줌 -> [{},{},{},[{}]] -> 111줄을 for 문으로 펼쳐서 넣어줘야 함.
-  addAll() : 리스트를 펼쳐서 넣어줌 -> [{},{},{},{}] -> for문 필요없음
-   */
 
   @override
   Widget build(BuildContext context) {
@@ -70,7 +70,6 @@ class _MyAppState extends State<MyApp> {
           )
         ],
       ),
-      // 자식에게 넘겨주기
       body: [Home(feedItems: feedItems, addData: addData), Text('Shop Page')][tab],
       bottomNavigationBar: BottomNavigationBar(
         showSelectedLabels: false,
@@ -90,7 +89,6 @@ class _MyAppState extends State<MyApp> {
   }
 }
 
-// StatefulWidget 이어야 함. 데이터가 바뀌어서
 class Home extends StatefulWidget {
   const Home({super.key, this.feedItems, this.addData});
   final feedItems;
@@ -103,7 +101,6 @@ class Home extends StatefulWidget {
 class _HomeState extends State<Home> {
   var scroll = ScrollController(); // 스크롤바 위치를 기록해주는 함수
 
-  // data1.json, data2.json -> 2개의 페이지만 있으므로 더이상 가져올게없으면 요청중지
   bool isLoading = false;   // 지금 데이터 요청 중인지
   bool hasMore = true;      // 더 가져올 데이터가 있는지
   int page = 1;
@@ -140,7 +137,6 @@ class _HomeState extends State<Home> {
   @override
   Widget build(BuildContext context) {
     if(widget.feedItems.isNotEmpty) {
-      // 스크롤이 움직일 때마다 스크롤 위치정보들을 scroll변수에 기록
       return ListView.builder(itemCount: widget.feedItems.length, controller: scroll, itemBuilder: (c, i) {
         return Column(
           children: [
