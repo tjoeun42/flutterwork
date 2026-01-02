@@ -33,7 +33,7 @@ class _MyAppState extends State<MyApp> {
   }
 
   getData() async {
-    // await Future.delayed(Duration(seconds: 2));
+    await Future.delayed(Duration(seconds: 2));
     var result = await http.get(Uri.parse('https://itwon.store/flutter/data/data.json'));
     if(result.statusCode == 200) {
       var result2 = jsonDecode(result.body);
@@ -44,17 +44,6 @@ class _MyAppState extends State<MyApp> {
       throw Exception('서버에서 가져오기 실패');
     }
   }
-
-  // feedItems 뒤에 하나 추가
-  addData(a) {
-    setState(() {
-      feedItems.addAll(a);  // 리스트를 펼쳐서 넣음.
-    });
-  }
-  /*
-  add() : 리스트 그대로 넣어줌 -> [{},{},{},[{}]] -> 111줄을 for 문으로 펼쳐서 넣어줘야 함.
-  addAll() : 리스트를 펼쳐서 넣어줌 -> [{},{},{},{}] -> for문 필요없음
-   */
 
   @override
   Widget build(BuildContext context) {
@@ -70,8 +59,7 @@ class _MyAppState extends State<MyApp> {
           )
         ],
       ),
-      // 자식에게 넘겨주기
-      body: [Home(feedItems: feedItems, addData: addData), Text('Shop Page')][tab],
+      body: [Home(feedItems: feedItems), Text('Shop Page')][tab],
       bottomNavigationBar: BottomNavigationBar(
         showSelectedLabels: false,
         showUnselectedLabels: false,
@@ -92,9 +80,8 @@ class _MyAppState extends State<MyApp> {
 
 // StatefulWidget 이어야 함. 데이터가 바뀌어서
 class Home extends StatefulWidget {
-  const Home({super.key, this.feedItems, this.addData});
+  const Home({super.key, this.feedItems});
   final feedItems;
-  final addData;
 
   @override
   State<Home> createState() => _HomeState();
@@ -103,37 +90,18 @@ class Home extends StatefulWidget {
 class _HomeState extends State<Home> {
   var scroll = ScrollController(); // 스크롤바 위치를 기록해주는 함수
 
-  // data1.json, data2.json -> 2개의 페이지만 있으므로 더이상 가져올게없으면 요청중지
-  bool isLoading = false;   // 지금 데이터 요청 중인지
-  bool hasMore = true;      // 더 가져올 데이터가 있는지
-  int page = 1;
-
-  getMore() async {
-    if(isLoading || !hasMore) return;
-
-    isLoading = true;
-    var result = await http.get(Uri.parse('https://itwon.store/flutter/data/data$page.json'));
-    if(result.statusCode == 200) {
-      var result2 = jsonDecode(result.body);
-        if(result2.isEmpty) {
-          hasMore = false;
-        } else {
-          widget.addData(result2);
-          page++;
-        }
-    } else {
-      hasMore = false;
-      throw Exception('서버에서 가져오기 실패');
-    }
-    isLoading = false;
-  }
-
   @override
   void initState() {
     super.initState();
-    scroll.addListener((){
-      if(scroll.position.pixels >= scroll.position.maxScrollExtent-100) {
-        getMore();
+
+    // 스크롤 이벤트 리스너를 등록(1번만 등록해줌)
+    scroll.addListener((){    // 스크롤이 움직일때 마다 호출됨
+      // print('스크롤위치 변경됨');
+      // print(scroll.position.pixels);  // 스크롤이 위에서부터 얼마나 내려왔는지 높이
+      // print(scroll.position.maxScrollExtent);  // 스크롤을 최대로 내릴수 있는 높이
+      // print(scroll.position.userScrollDirection); // 스크롤이 되는 방향
+      if(scroll.position.pixels == scroll.position.maxScrollExtent) {
+        print('맨 밑까지 스크롤 함');
       }
     });
   }
@@ -141,7 +109,7 @@ class _HomeState extends State<Home> {
   Widget build(BuildContext context) {
     if(widget.feedItems.isNotEmpty) {
       // 스크롤이 움직일 때마다 스크롤 위치정보들을 scroll변수에 기록
-      return ListView.builder(itemCount: widget.feedItems.length, controller: scroll, itemBuilder: (c, i) {
+      return ListView.builder(itemCount: 3, controller: scroll, itemBuilder: (c, i) {
         return Column(
           children: [
             Image.network(widget.feedItems[i]['image']),
