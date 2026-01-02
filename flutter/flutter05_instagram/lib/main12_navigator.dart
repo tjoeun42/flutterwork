@@ -4,21 +4,20 @@ import 'package:http/http.dart' as http;
 import 'dart:convert';
 import 'package:flutter/rendering.dart';
 
-import 'package:image_picker/image_picker.dart';
-import 'dart:io';
-
-// 폰에 저장된 사진 가져오기. image_picker 추가
-
+/*
+* Navigator : 화면간의 이동
+  - Navigator.push(context, route) : 새로운 화면을 스택에 추가
+  - Navigator.pop(context) : 현재 화면을 스택에서 제거하면 이전화면이 보임.
+  - Navigator.pushNamed(context, routeName) : 이름으로 등록된 경로로 이동
+  - Navigaotr.pushReplacement(context, route) : 현재 화면을 새 화면으로 교체
+  - Navigator.popUntil(context, predicate) : 특정 조건을 만족할 때까지 뒤로 감
+ */
 void main() {
   runApp(
-    MaterialApp(
-      theme: style.theme,
-      initialRoute: '/',
-      routes: {
-        '/' : (context) => MyApp(),
-        '/detail' : (context) => Upload(),
-      },
-    )
+      MaterialApp(
+          theme: style.theme,
+          home: const MyApp()
+      )
   );
 }
 
@@ -32,8 +31,6 @@ class MyApp extends StatefulWidget {
 class _MyAppState extends State<MyApp> {
   var tab = 0;
   var feedItems = [];
-  // 이미지 저장공간 만들기
-  var userImage;
 
   @override
   void initState() {
@@ -66,20 +63,13 @@ class _MyAppState extends State<MyApp> {
         title:Text('Instargram'),
         actions: [
           IconButton(
-            onPressed: () async {
-              var picker = ImagePicker();
-              var image = await picker.pickImage(source: ImageSource.gallery);
-              if(image != null) {
-                setState(() {
-                  userImage = File(image.path);
-                });
-              }
-              // 이미지를 띄우려면
-              // Image.file(userImage)
-
-
-              // picker.pickImage(source: ImageSource.camera)
-              Navigator.pushNamed(context, '/detail');
+            onPressed: (){
+              Navigator.push(context,
+                MaterialPageRoute(
+                  // builder: (context) => Text('새페이지')
+                  builder: (context) => Upload()
+                )
+              );
             },
             icon: Icon(Icons.add_box_outlined)
           )
@@ -114,10 +104,10 @@ class Home extends StatefulWidget {
 }
 
 class _HomeState extends State<Home> {
-  var scroll = ScrollController();
+  var scroll = ScrollController(); // 스크롤바 위치를 기록해주는 함수
 
-  bool isLoading = false;
-  bool hasMore = true;
+  bool isLoading = false;   // 지금 데이터 요청 중인지
+  bool hasMore = true;      // 더 가져올 데이터가 있는지
   int page = 1;
 
   getMore() async {

@@ -4,18 +4,17 @@ import 'package:http/http.dart' as http;
 import 'dart:convert';
 import 'package:flutter/rendering.dart';
 
-import 'package:image_picker/image_picker.dart';
-import 'dart:io';
-
-// 폰에 저장된 사진 가져오기. image_picker 추가
-
 void main() {
   runApp(
     MaterialApp(
       theme: style.theme,
       initialRoute: '/',
       routes: {
+        // '/':(context) => Text('첫 페이지'),
+        // '/detail' : (context) => Text('두번째 페이지')  // 크롬으로 열어서 localhost:포트번호/#/detail
+
         '/' : (context) => MyApp(),
+        // '/detail' : (context) => Text('두번째 페이지')  // 상단의 +버튼을 누르면 보이게
         '/detail' : (context) => Upload(),
       },
     )
@@ -32,8 +31,6 @@ class MyApp extends StatefulWidget {
 class _MyAppState extends State<MyApp> {
   var tab = 0;
   var feedItems = [];
-  // 이미지 저장공간 만들기
-  var userImage;
 
   @override
   void initState() {
@@ -66,19 +63,7 @@ class _MyAppState extends State<MyApp> {
         title:Text('Instargram'),
         actions: [
           IconButton(
-            onPressed: () async {
-              var picker = ImagePicker();
-              var image = await picker.pickImage(source: ImageSource.gallery);
-              if(image != null) {
-                setState(() {
-                  userImage = File(image.path);
-                });
-              }
-              // 이미지를 띄우려면
-              // Image.file(userImage)
-
-
-              // picker.pickImage(source: ImageSource.camera)
+            onPressed: (){
               Navigator.pushNamed(context, '/detail');
             },
             icon: Icon(Icons.add_box_outlined)
@@ -114,10 +99,10 @@ class Home extends StatefulWidget {
 }
 
 class _HomeState extends State<Home> {
-  var scroll = ScrollController();
+  var scroll = ScrollController(); // 스크롤바 위치를 기록해주는 함수
 
-  bool isLoading = false;
-  bool hasMore = true;
+  bool isLoading = false;   // 지금 데이터 요청 중인지
+  bool hasMore = true;      // 더 가져올 데이터가 있는지
   int page = 1;
 
   getMore() async {
