@@ -21,7 +21,14 @@ class MyApp extends StatefulWidget {
 
 class _MyAppState extends State<MyApp> {
   var tab = 0;
-  var feedItems = [];
+  /*
+  @override
+  void initState() async {  // initState는 async를 쓸 수 없게 막아놨음
+    super.initState();
+    var result = await http.get(Uri.parse('https://itwon.store/flutter/data/data.json'));
+    print('웹상의 json 출력 : ${result.body}');
+  }
+  */
 
   @override
   void initState() {
@@ -30,14 +37,16 @@ class _MyAppState extends State<MyApp> {
   }
 
   getData() async {
-    await Future.delayed(Duration(seconds: 2));
     var result = await http.get(Uri.parse('https://itwon.store/flutter/data/data.json'));
+    // print(result.body);
 
-    var result2 = jsonDecode(result.body);
-    setState(() {
-      feedItems = result2;
-    });
+    // [{},{},{}] : json타입 -> List객체로 변환 [{map으로 들어옴},..]
+    print(jsonDecode(result.body));
+
+    var feedItems = jsonDecode(result.body);
+    print(feedItems[0]['user']);
   }
+
 
   @override
   Widget build(BuildContext context) {
@@ -53,7 +62,7 @@ class _MyAppState extends State<MyApp> {
           )
         ],
       ),
-      body: [Home(feedItems: feedItems), Text('Shop Page')][tab],
+      body: [Home(), Text('Shop Page')][tab],
       bottomNavigationBar: BottomNavigationBar(
         showSelectedLabels: false,
         showUnselectedLabels: false,
@@ -73,35 +82,32 @@ class _MyAppState extends State<MyApp> {
 }
 
 class Home extends StatelessWidget {
-  const Home({super.key, this.feedItems});
-  final feedItems;
+  const Home({super.key});
 
   @override
   Widget build(BuildContext context) {
-    if(feedItems.isNotEmpty) {
-      return ListView.builder(itemCount: 3, itemBuilder: (c, i) {
-        return Column(
-          children: [
-            Image.network(feedItems[i]['image']),
-            Container(
-              padding: EdgeInsets.all(20),
-              width: double.infinity,
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Text('좋아요 : ${feedItems[i]['likes']}'),
-                  Text('글쓴이 : ${feedItems[i]['user']}'),
-                  Text('내용 : ${feedItems[i]['content']}')
-                ],
-              ),
+    return ListView.builder(itemCount: 3, itemBuilder: (c, i) {
+      return Column(
+        children: [
+          // Image.asset('assets/img/profile1.jpg'),
+          // 웹상의 이미지 가져오기
+          Image.network('https://itwon.store/flutter/img/profile1.jpg'),
+          Container(
+            padding: EdgeInsets.all(20),
+            width: double.infinity,
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Text('좋아요 : 100'),
+                Text('글쓴이'),
+                Text('글내용')
+              ],
             ),
-          ],
-        );
-      }
+          ),
+        ],
       );
-    } else {
-      return Center(child: CircularProgressIndicator());
-    }
+      }
+    );
   }
 }
 
