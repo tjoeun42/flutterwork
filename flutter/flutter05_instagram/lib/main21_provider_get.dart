@@ -282,80 +282,46 @@ class Profile extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(title: Text(context.watch<Store2>().name)),
-      /*
-      body: GridView.builder(
-        gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(crossAxisCount: 2, mainAxisSpacing: 10, crossAxisSpacing: 10),
-                                                              // 가로로 몇개 넣을지,     위_아래 간격,       좌우간격
-        itemBuilder: (context, i) { return Container(color: Colors.grey);},
-        itemCount: 10,
-      ),
-       */
-      /*
       body: Column(
         children: [
-          Text('profile'),  // 고정
-          Expanded(  // 이 부분만 스크롤 바가 생김
-            child: GridView.builder(
-              gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(crossAxisCount: 2, mainAxisSpacing: 10, crossAxisSpacing: 10),
-              itemBuilder: (context, i) { return Container(color: Colors.grey);},
-              itemCount: 10,
-            ),
-          )
-        ],
-      )
-      */
-        /*
-      // CustomScrollView로 감싸면 모두 스크롤바가 생김
-      // slivers에는 아무 위젯이나 넣을 수 없다. 앞에 sliver가 붙은 위젯만 사용가능
-      body: CustomScrollView(
-        slivers: [
-          SliverGrid(), // 그리드 사용시
-          SliverList(), // ListView 사용시
-          SliverToBoxAdapter(), // 일반 위젯들은 이 안에 넣어야 됨
-          SliverAppBar()    // AppBar 사용시
-        ],
-      )
-      */
-      body: CustomScrollView(
-        slivers: [
-          SliverToBoxAdapter(
-            child: ProfileHeader(),
+          Row(
+            mainAxisAlignment: MainAxisAlignment.spaceAround,
+            children: [
+              CircleAvatar(
+                radius: 30,
+                backgroundImage: AssetImage('assets/img/user1.png')
+              ),
+              Text('팔로워 ${context.watch<Store1>().follower}명'),
+              ElevatedButton(
+                onPressed: (){
+                  context.read<Store1>().addFollower();
+                },
+                child: Text('팔로우')
+              ),
+              ElevatedButton(
+                onPressed: () {
+                  context.read<Store1>().getData();
+                },
+                child: Text('사진 가져오기')
+              )
+            ],
           ),
-          SliverGrid(
-            delegate: SliverChildBuilderDelegate(
-              (c, i) => Container(color: Colors.grey),
-              childCount: 13
-            ), 
-            gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(crossAxisCount: 2, mainAxisSpacing: 5, crossAxisSpacing: 5)
+          Expanded(
+            child: ListView.builder(
+              itemCount: context.watch<Store1>().profileImage.length,
+              itemBuilder: (context, index) {
+                var img = context.watch<Store1>().profileImage[index];
+                return Padding(
+                  padding: EdgeInsets.all(5),
+                  child: Image.network(img),
+                );
+              }
+            )
           )
         ],
       ),
+
     );
   }
 }
-
-class ProfileHeader extends StatelessWidget {
-  const ProfileHeader({super.key});
-
-  @override
-  Widget build(BuildContext context) {
-    return Row(
-      mainAxisAlignment: MainAxisAlignment.spaceAround,
-      children: [
-        CircleAvatar(
-            radius: 30,
-            backgroundImage: AssetImage('assets/img/user1.png')
-        ),
-        Text('팔로워 ${context.watch<Store1>().follower}명'),
-        ElevatedButton(
-            onPressed: (){
-              context.read<Store1>().addFollower();
-            },
-            child: Text('팔로우')
-        )
-      ],
-    );
-  }
-}
-
 
