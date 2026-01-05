@@ -1,17 +1,13 @@
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import './style.dart' as style;
 import 'package:http/http.dart' as http;
 import 'dart:convert';
 import 'package:flutter/rendering.dart';
-import 'package:intl/intl.dart';
+
 import 'package:image_picker/image_picker.dart';
 import 'dart:io';
 
-/*
-
-
- */
+// 폰에 저장된 사진 가져오기. image_picker 추가
 
 void main() {
   runApp(
@@ -32,8 +28,9 @@ class MyApp extends StatefulWidget {
 class _MyAppState extends State<MyApp> {
   var tab = 0;
   var feedItems = [];
+  // 이미지 저장공간 만들기
   var userImage;
-  var userContent;
+  var userContent;  // 사용자로부터 입력받아서 저장
 
   setUserContent(newContent) {
     setState(() {
@@ -66,12 +63,11 @@ class _MyAppState extends State<MyApp> {
   }
 
   addMyData() {
-    String formattedData = DateFormat('MMM dd').format(DateTime.now());
     var myData = {
-      "id": feedItems.length,
+      "id": 50,
       "image": userImage,
       "likes": 0,
-      "date": formattedData,
+      "date": "Jun 02",
       "content": userContent,
       "liked": false,
       "user": "John Kim"
@@ -96,6 +92,7 @@ class _MyAppState extends State<MyApp> {
                   userImage = File(image.path);
                 });
               }
+              // picker.pickImage(source: ImageSource.camera)  // 카메라로 직접 찍기
               Navigator.push(context, MaterialPageRoute(builder: (context) => Upload(
                 userImage: userImage,
                 setUserContent: setUserContent,
@@ -188,19 +185,8 @@ class _HomeState extends State<Home> {
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   Text('좋아요 : ${widget.feedItems[i]['likes']}'),
-                  GestureDetector(
-                    child: Text('글쓴이 : ${widget.feedItems[i]['user']}'),
-                    onTap: () {
-                      Navigator.push(context,
-                        PageRouteBuilder(pageBuilder: (context, a1, a2) => Profile(),
-                          transitionsBuilder: (context, a1, a2, child) => FadeTransition(opacity: a1, child: child),
-                          transitionDuration: Duration(milliseconds: 1000)
-                        )
-                      );
-                    },
-                  ),
-                  Text('내용 : ${widget.feedItems[i]['content']}'),
-                  Text('날짜 : ${widget.feedItems[i]['date']}')
+                  Text('글쓴이 : ${widget.feedItems[i]['user']}'),
+                  Text('내용 : ${widget.feedItems[i]['content']}')
                 ],
               ),
             ),
@@ -241,18 +227,6 @@ class Upload extends StatelessWidget {
           IconButton(onPressed: (){ Navigator.pop(context); }, icon: Icon(Icons.close))
         ],
       ),
-    );
-  }
-}
-
-class Profile extends StatelessWidget {
-  const Profile({super.key});
-
-  @override
-  Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(),
-      body: Center(child: Text('profile page')),
     );
   }
 }

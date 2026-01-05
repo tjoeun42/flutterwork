@@ -1,16 +1,21 @@
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import './style.dart' as style;
 import 'package:http/http.dart' as http;
 import 'dart:convert';
 import 'package:flutter/rendering.dart';
-import 'package:intl/intl.dart';
 import 'package:image_picker/image_picker.dart';
 import 'dart:io';
+import 'package:shared_preferences/shared_preferences.dart';
 
 /*
+> 앱을 다시 켜면 upload했던 내용이 사라짐.
+> 사라지지 않게 하려면 DB에 저장하든지, 로컬에 저장
 
-
+* shared preference (localStorage와 비슷)
+  : 로컬 저장 공간
+  넣을 때 : set자료형('키','값')
+  가져올 때 : get자료형('키')
+             get('키') -> 데이터 자료형을 모를 경우. Object나 dynamic 반환 -> 자료를 형변환해야 할 수도 있음
  */
 
 void main() {
@@ -35,6 +40,38 @@ class _MyAppState extends State<MyApp> {
   var userImage;
   var userContent;
 
+  saveData() async {
+    var storage = await SharedPreferences.getInstance();
+    storage.setString('name', 'emmer'); // 저장
+    var result = storage.get('name');
+    print(result);
+
+    storage.setBool('bool', true);
+    storage.setDouble('dou', 3.1415);
+    storage.setStringList('list', ['list1', 'list2']);
+    var result2 = storage.get('bool');
+    var result3 = storage.get('dou');
+    var result4 = storage.get('list');
+    var result5 = storage.getStringList('list')?[0];
+    print('bool출력 : $result2');
+    print('dou출력 : $result3');
+    print('list출력 : $result4');
+    print('list[0]출력 : $result5');
+
+    storage.remove('dou');    // 삭제
+    storage.clear();          // 모두 삭제
+
+    // map 저장
+    var map = {'age' : 20};
+    storage.setString('map', jsonEncode(map));
+
+    var result6 = storage.get('map');
+    print('map : $result6');
+    // print(jsonDecode(result6)); // 오류 null일수도 있기 때문
+    var result7 = storage.getString('map') ?? '비었음';
+    print(jsonDecode(result7)['age']);
+  }
+
   setUserContent(newContent) {
     setState(() {
       userContent = newContent;
@@ -45,6 +82,7 @@ class _MyAppState extends State<MyApp> {
   void initState() {
     super.initState();
     getData();
+    saveData();
   }
 
   getData() async {
@@ -66,12 +104,11 @@ class _MyAppState extends State<MyApp> {
   }
 
   addMyData() {
-    String formattedData = DateFormat('MMM dd').format(DateTime.now());
     var myData = {
-      "id": feedItems.length,
+      "id": 50,
       "image": userImage,
       "likes": 0,
-      "date": formattedData,
+      "date": "Jun 02",
       "content": userContent,
       "liked": false,
       "user": "John Kim"
@@ -96,6 +133,7 @@ class _MyAppState extends State<MyApp> {
                   userImage = File(image.path);
                 });
               }
+
               Navigator.push(context, MaterialPageRoute(builder: (context) => Upload(
                 userImage: userImage,
                 setUserContent: setUserContent,
@@ -188,19 +226,8 @@ class _HomeState extends State<Home> {
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   Text('좋아요 : ${widget.feedItems[i]['likes']}'),
-                  GestureDetector(
-                    child: Text('글쓴이 : ${widget.feedItems[i]['user']}'),
-                    onTap: () {
-                      Navigator.push(context,
-                        PageRouteBuilder(pageBuilder: (context, a1, a2) => Profile(),
-                          transitionsBuilder: (context, a1, a2, child) => FadeTransition(opacity: a1, child: child),
-                          transitionDuration: Duration(milliseconds: 1000)
-                        )
-                      );
-                    },
-                  ),
-                  Text('내용 : ${widget.feedItems[i]['content']}'),
-                  Text('날짜 : ${widget.feedItems[i]['date']}')
+                  Text('글쓴이 : ${widget.feedItems[i]['user']}'),
+                  Text('내용 : ${widget.feedItems[i]['content']}')
                 ],
               ),
             ),
@@ -241,18 +268,6 @@ class Upload extends StatelessWidget {
           IconButton(onPressed: (){ Navigator.pop(context); }, icon: Icon(Icons.close))
         ],
       ),
-    );
-  }
-}
-
-class Profile extends StatelessWidget {
-  const Profile({super.key});
-
-  @override
-  Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(),
-      body: Center(child: Text('profile page')),
     );
   }
 }

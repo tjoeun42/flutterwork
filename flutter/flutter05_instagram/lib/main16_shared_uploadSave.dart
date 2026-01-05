@@ -1,17 +1,12 @@
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import './style.dart' as style;
 import 'package:http/http.dart' as http;
 import 'dart:convert';
 import 'package:flutter/rendering.dart';
-import 'package:intl/intl.dart';
 import 'package:image_picker/image_picker.dart';
 import 'dart:io';
-
-/*
-
-
- */
+import 'package:intl/intl.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 void main() {
   runApp(
@@ -34,6 +29,29 @@ class _MyAppState extends State<MyApp> {
   var feedItems = [];
   var userImage;
   var userContent;
+  // shared에 저장
+  saveData() async {
+    var storage = await SharedPreferences.getInstance();
+    List<String> stringList = feedItems.map((item) => jsonEncode(item)).toList();
+    await storage.setStringList('items', stringList);
+  }
+
+  // shared에서 가져오기
+  loadData() async {
+    var storage = await SharedPreferences.getInstance();
+    List<String>? stringList = storage.getStringList('items');
+
+    if(stringList != null) {
+      List<Map<String, dynamic>> restored =
+          stringList.map((item)=> jsonDecode(item) as Map<String, dynamic>).toList();
+
+      setState(() {
+        feedItems = restored;
+      });
+    } else {
+      getData();
+    }
+  }
 
   setUserContent(newContent) {
     setState(() {
@@ -44,7 +62,7 @@ class _MyAppState extends State<MyApp> {
   @override
   void initState() {
     super.initState();
-    getData();
+    loadData();
   }
 
   getData() async {
@@ -66,10 +84,12 @@ class _MyAppState extends State<MyApp> {
   }
 
   addMyData() {
+    // var now = DateTime.now();
+    // var formatter = DateFormat('MMM dd');
     String formattedData = DateFormat('MMM dd').format(DateTime.now());
     var myData = {
       "id": feedItems.length,
-      "image": userImage,
+      "image": userImage is String ? userImage : userImage.path,
       "likes": 0,
       "date": formattedData,
       "content": userContent,
@@ -79,6 +99,7 @@ class _MyAppState extends State<MyApp> {
     setState(() {
       feedItems.insert(0, myData);
     });
+    saveData();
   }
 
   @override
@@ -96,6 +117,7 @@ class _MyAppState extends State<MyApp> {
                   userImage = File(image.path);
                 });
               }
+
               Navigator.push(context, MaterialPageRoute(builder: (context) => Upload(
                 userImage: userImage,
                 setUserContent: setUserContent,
@@ -136,7 +158,6 @@ class Home extends StatefulWidget {
 
 class _HomeState extends State<Home> {
   var scroll = ScrollController();
-
   bool isLoading = false;
   bool hasMore = true;
   int page = 1;
@@ -177,9 +198,9 @@ class _HomeState extends State<Home> {
       return ListView.builder(itemCount: widget.feedItems.length, controller: scroll, itemBuilder: (c, i) {
         return Column(
           children: [
-            widget.feedItems[i]['image'].runtimeType == String 
+            widget.feedItems[i]['image'].runtimeType == String && (widget.feedItems[i]['image'] as String).startsWith('http')
             ? Image.network(widget.feedItems[i]['image'])
-            : Image.file(widget.feedItems[i]['image'], height: 400, width: double.infinity, fit: BoxFit.cover),
+            : Image.file(File(widget.feedItems[i]['image']), height: 250, width: double.infinity, fit: BoxFit.cover),
 
             Container(
               padding: EdgeInsets.all(20),
@@ -188,17 +209,7 @@ class _HomeState extends State<Home> {
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   Text('좋아요 : ${widget.feedItems[i]['likes']}'),
-                  GestureDetector(
-                    child: Text('글쓴이 : ${widget.feedItems[i]['user']}'),
-                    onTap: () {
-                      Navigator.push(context,
-                        PageRouteBuilder(pageBuilder: (context, a1, a2) => Profile(),
-                          transitionsBuilder: (context, a1, a2, child) => FadeTransition(opacity: a1, child: child),
-                          transitionDuration: Duration(milliseconds: 1000)
-                        )
-                      );
-                    },
-                  ),
+                  Text('글쓴이 : ${widget.feedItems[i]['user']}'),
                   Text('내용 : ${widget.feedItems[i]['content']}'),
                   Text('날짜 : ${widget.feedItems[i]['date']}')
                 ],
@@ -241,18 +252,6 @@ class Upload extends StatelessWidget {
           IconButton(onPressed: (){ Navigator.pop(context); }, icon: Icon(Icons.close))
         ],
       ),
-    );
-  }
-}
-
-class Profile extends StatelessWidget {
-  const Profile({super.key});
-
-  @override
-  Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(),
-      body: Center(child: Text('profile page')),
     );
   }
 }

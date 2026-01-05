@@ -9,9 +9,24 @@ import 'package:image_picker/image_picker.dart';
 import 'dart:io';
 
 /*
+* GestureDetector() : 제스쳐(터치 이벤트)를 감지할 수 있도록 도와주는 위젯
+                    속성                |          설명
+  ---------------------------------------------------------------
+  onTap                                 | 한 번 탭했을 때
+  onDoubleTap                           | 두 번 탭했을 때
+  onLongPress                           | 길게 눌렀을 때
+  onPanUpdate                           | 드래그할 때 위치 변화 감지
+  onHorizontalDragStart / Update / End  | 가로 드래그
+  onVerticalDragStart / Update / End    | 세로 드래그
 
-
- */
+ * 커스텀 페이지 전환 애니메이션 : PageRouteBuilder()
+   - 에니메이션 위젯
+     FadeTransition()
+     PositionalTransition()
+     ScaleTransition()
+     Rotation Transition()
+     Slide Transition()
+*/
 
 void main() {
   runApp(
@@ -192,9 +207,30 @@ class _HomeState extends State<Home> {
                     child: Text('글쓴이 : ${widget.feedItems[i]['user']}'),
                     onTap: () {
                       Navigator.push(context,
+                        // MaterialPageRoute(builder: (context) => Profile())
+                        // CupertinoPageRoute(builder: (context) => Profile())
+                        /* 사용자 전환 애니메이션 사용
+                        PageRouteBuilder(pageBuilder: (context, a1, a2){},
+                              a1 : 새 페이지 전환의 진행 정도 0~1
+                              a2 : 기존 페이지 전환의 진행 정도
+                            transitionsBuilder: (context, a1, a2, child){}
+                              child : 새로 띄울 페이지
+                        )
+                        */
                         PageRouteBuilder(pageBuilder: (context, a1, a2) => Profile(),
+                          /*  Fade In 애니메이션
                           transitionsBuilder: (context, a1, a2, child) => FadeTransition(opacity: a1, child: child),
                           transitionDuration: Duration(milliseconds: 1000)
+                          */
+
+                          // Slide 애니메이션
+                          transitionsBuilder: (context, a1, a2, child) =>
+                            SlideTransition(position: Tween(
+                              begin: Offset(1.0, 0.0),
+                              end: Offset(0.0, 0.0)
+                            ).animate(a1),
+                              child: child,
+                            )
                         )
                       );
                     },
