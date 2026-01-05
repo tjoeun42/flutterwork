@@ -219,13 +219,6 @@ class _HomeState extends State<Home> {
 class Store1 extends ChangeNotifier {
   var follower = 0;
   var isFollower = false;
-  var profileImage = [];
-
-  getData() async {
-    var result = await http.get(Uri.parse('https://itwon.store/flutter/profileImg/profile.json'));
-    // 수정
-    notifyListeners();
-  }
 
   addFollower() {
     if(isFollower) {
@@ -281,29 +274,22 @@ class Profile extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(title: Text(context.watch<Store2>().name)),
-      body: Column(
+      body: Row(
+        mainAxisAlignment: MainAxisAlignment.spaceAround,
         children: [
-          Row(
-            mainAxisAlignment: MainAxisAlignment.spaceAround,
-            children: [
-              CircleAvatar(
-                radius: 30,
-                backgroundImage: AssetImage('assets/img/user1.png')
-              ),
-              Text('팔로워 ${context.watch<Store1>().follower}명'),
-              ElevatedButton(
-                onPressed: (){
-                  context.read<Store1>().addFollower();
-                },
-                child: Text('팔로우')
-              ),
-              // 버튼 넣어서 누르면 사진 보여주는 버튼
-            ],
+          CircleAvatar(
+            radius: 30,
+            backgroundImage: AssetImage('assets/img/user1.png')
           ),
-          Expanded(child: child)  그림 보여주기
+          Text('팔로워 ${context.watch<Store1>().follower}명'),
+          ElevatedButton(
+            onPressed: (){
+              context.read<Store1>().addFollower();
+            },
+            child: Text('팔로우')
+          ),
         ],
-      ),
-
+      )
     );
   }
 }

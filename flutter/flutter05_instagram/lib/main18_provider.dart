@@ -9,13 +9,18 @@ import 'package:image_picker/image_picker.dart';
 import 'dart:io';
 import 'package:provider/provider.dart';
 
+/*
+  > 넘겨줘야할 값이 있을 때 하위 위젯이 많으면 넘겨주기 귀찬음
+  * Provider : 전송 없이 위젯이 state를 직접 가져다 쓸 수 있게 만들어주는 패키지
+               (플러터 기본 기능에 InheritedWidget이 있으나, 문법이 어려워서 패키지 설치하여 사용)
+    - state 보관하는 store필요 : 모든 위젯들이 공유할 state들은 class를 따로 만들어서 보과
+      순서 : state class 만들기 -> 등록(ChangeNotifierProvider()로 감싸기) -> 사용
+ */
+
 void main() {
   runApp(
-    MultiProvider(
-      providers: [
-        ChangeNotifierProvider(create: (context) => Store1()),
-        ChangeNotifierProvider(create: (context) => Store2())
-      ],
+    ChangeNotifierProvider(
+      create: (context) => Store1(),
       child: MaterialApp(
         theme: style.theme,
         home: const MyApp(),
@@ -217,30 +222,13 @@ class _HomeState extends State<Home> {
 }
 
 class Store1 extends ChangeNotifier {
-  var follower = 0;
-  var isFollower = false;
-  var profileImage = [];
-
-  getData() async {
-    var result = await http.get(Uri.parse('https://itwon.store/flutter/profileImg/profile.json'));
-    // 수정
-    notifyListeners();
-  }
-
-  addFollower() {
-    if(isFollower) {
-      follower--;
-      isFollower = false;
-    } else {
-      follower++;
-      isFollower = true;
-    }
-    notifyListeners();
-  }
-}
-
-class Store2 extends ChangeNotifier {
   var name = 'john kim';
+
+  changeName() {
+    name = 'john park';
+    // 재렌더링은 setState를 사용하지않고 아래처럼 사용
+    notifyListeners();
+  }
 }
 
 class Upload extends StatelessWidget {
@@ -280,31 +268,20 @@ class Profile extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(title: Text(context.watch<Store2>().name)),
-      body: Column(
-        children: [
-          Row(
-            mainAxisAlignment: MainAxisAlignment.spaceAround,
-            children: [
-              CircleAvatar(
-                radius: 30,
-                backgroundImage: AssetImage('assets/img/user1.png')
-              ),
-              Text('팔로워 ${context.watch<Store1>().follower}명'),
-              ElevatedButton(
-                onPressed: (){
-                  context.read<Store1>().addFollower();
-                },
-                child: Text('팔로우')
-              ),
-              // 버튼 넣어서 누르면 사진 보여주는 버튼
-            ],
-          ),
-          Expanded(child: child)  그림 보여주기
-        ],
-      ),
-
+      appBar: AppBar(title: Text(context.watch<Store1>().name)),
+      body: ElevatedButton(
+        onPressed: (){
+          context.read<Store1>().changeName();
+        },
+        child: Text('이름 바꾸기')
+      )
     );
   }
 }
+
+/*
+ -Provider 사용할 때
+  > context.watch<>() : state를 출력할 때
+  > context.read<>() : state안의 함수를 사용할 때
+ */
 
