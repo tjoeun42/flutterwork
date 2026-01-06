@@ -1,6 +1,5 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter05_instagram/notification.dart';
 import './style.dart' as style;
 import 'package:http/http.dart' as http;
 import 'dart:convert';
@@ -10,12 +9,6 @@ import 'package:image_picker/image_picker.dart';
 import 'dart:io';
 import 'package:provider/provider.dart';
 
-/*
-  알림 띄우기
-  notification 2가지 종류
-  - push notification : 서버에서 보내는 알림
-  - local notification : 앱 자체에서 실행하는 알림
- */
 void main() {
   runApp(
     MultiProvider(
@@ -53,7 +46,6 @@ class _MyAppState extends State<MyApp> {
   @override
   void initState() {
     super.initState();
-    initNotification(context);
     getData();
   }
 
@@ -97,20 +89,6 @@ class _MyAppState extends State<MyApp> {
       appBar: AppBar(
         title:Text('Instargram'),
         actions: [
-          IconButton(
-            onPressed: (){
-              showNotification2();
-              print("알림을 보냈습니다");
-            },
-            icon: Icon(Icons.alarm)
-          ),
-          /*IconButton(
-              onPressed: () async {
-                await notifications.cancel(1);
-                print("알림을 보냈습니다");
-              },
-              icon: Icon(Icons.cancel)
-          ),*/
           IconButton(
             onPressed: () async {
               var picker = ImagePicker();
