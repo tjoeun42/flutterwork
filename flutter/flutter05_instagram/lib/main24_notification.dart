@@ -9,16 +9,14 @@ import 'package:intl/intl.dart';
 import 'package:image_picker/image_picker.dart';
 import 'dart:io';
 import 'package:provider/provider.dart';
-import 'package:firebase_core/firebase_core.dart';
-import 'firebase_options.dart';
-import 'shop.dart';
 
-void main() async{
-  WidgetsFlutterBinding.ensureInitialized();
-  await Firebase.initializeApp(
-    options: DefaultFirebaseOptions.currentPlatform,
-  );
-
+/*
+  알림 띄우기
+  notification 2가지 종류
+  - push notification : 서버에서 보내는 알림
+  - local notification : 앱 자체에서 실행하는 알림
+ */
+void main() {
   runApp(
     MultiProvider(
       providers: [
@@ -101,11 +99,18 @@ class _MyAppState extends State<MyApp> {
         actions: [
           IconButton(
             onPressed: (){
-              showNotification();
+              showNotification2();
               print("알림을 보냈습니다");
             },
             icon: Icon(Icons.alarm)
           ),
+          /*IconButton(
+              onPressed: () async {
+                await notifications.cancel(1);
+                print("알림을 보냈습니다");
+              },
+              icon: Icon(Icons.cancel)
+          ),*/
           IconButton(
             onPressed: () async {
               var picker = ImagePicker();
@@ -125,7 +130,7 @@ class _MyAppState extends State<MyApp> {
           )
         ],
       ),
-      body: [Home(feedItems: feedItems, addData: addData), Shop()][tab],
+      body: [Home(feedItems: feedItems, addData: addData), Text('Shop Page')][tab],
       bottomNavigationBar: BottomNavigationBar(
         showSelectedLabels: false,
         showUnselectedLabels: false,
