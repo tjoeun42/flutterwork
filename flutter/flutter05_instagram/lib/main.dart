@@ -1,5 +1,6 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter05_instagram/login.dart';
 import 'package:flutter05_instagram/notification.dart';
 import './style.dart' as style;
 import 'package:http/http.dart' as http;
@@ -12,6 +13,7 @@ import 'package:provider/provider.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'firebase_options.dart';
 import 'shop.dart';
+import 'login.dart';
 
 void main() async{
   WidgetsFlutterBinding.ensureInitialized();
@@ -122,6 +124,15 @@ class _MyAppState extends State<MyApp> {
               )));
             },
             icon: Icon(Icons.add_box_outlined)
+          ),
+          IconButton(
+            onPressed: () {
+              Navigator.push(
+                context,
+                MaterialPageRoute(builder: (context) => LoginPage())
+              );
+            },
+            icon: Icon(Icons.login)
           )
         ],
       ),
