@@ -10,10 +10,17 @@ import 'package:intl/intl.dart';
 import 'package:image_picker/image_picker.dart';
 import 'dart:io';
 import 'package:provider/provider.dart';
+import 'package:firebase_core/firebase_core.dart';
+import 'firebase_options.dart';
 import 'shop.dart';
-import 'homeLarge.dart';
+import 'login.dart';
 
 void main() async{
+  WidgetsFlutterBinding.ensureInitialized();
+  await Firebase.initializeApp(
+    options: DefaultFirebaseOptions.currentPlatform,
+  );
+
   runApp(
     MultiProvider(
       providers: [
@@ -90,18 +97,6 @@ class _MyAppState extends State<MyApp> {
 
   @override
   Widget build(BuildContext context) {
-    // MediaQuery.of : 현재 기기
-    // print('가로 : ${MediaQuery.of(context).size.width}');
-    // print('세로 : ${MediaQuery.of(context).size.height}');
-    // print('기기의 상단 : ${MediaQuery.of(context).padding.top}');
-    // print('해상도 : ${MediaQuery.of(context).devicePixelRatio}');  // 이 기기는 1LP에 픽셀이 몇개 들어가는지
-
-    // 고대비 옵션이 켜져있는지 아닌지
-    // print(MediaQuery.of(context).highContrast);
-
-    // 폰트 사이즈를 얼마나 키우고 폰을 쓰는지
-    // print(MediaQuery.of(context).textScaler);
-
     return Scaffold(
       appBar: AppBar(
         title:Text('Instargram'),
@@ -141,7 +136,7 @@ class _MyAppState extends State<MyApp> {
           )
         ],
       ),
-      body: [MediaQuery.sizeOf(context).width > 600 ? Homelarge() : Home(feedItems: feedItems, addData: addData), Shop()][tab],
+      body: [Home(feedItems: feedItems, addData: addData), Shop()][tab],
       bottomNavigationBar: BottomNavigationBar(
         showSelectedLabels: false,
         showUnselectedLabels: false,
