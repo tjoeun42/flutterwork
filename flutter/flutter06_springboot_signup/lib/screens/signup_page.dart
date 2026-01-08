@@ -206,7 +206,7 @@ class _InitPageState extends State<InitPage> {
       _errorMsg = '';
     });
     try {
-      List<User> users = await _dbService.getAllUsers();
+      final users = await _dbService.getAllUsers();
        setState(() {
          _allUsers = users;
        });
@@ -229,7 +229,54 @@ class _InitPageState extends State<InitPage> {
         label: Text('모든 회원 정보 가져오기'),
         icon: Icon(Icons.get_app),
       ),
-      body: Center(child: Text('축하합니다.\n회원가입이 되었습니다.')),
+      appBar: AppBar(title: Text('회원가입 완료')),
+      body: Column(
+        children: [
+          Text('축하합니다.\n회원가입이 되었습니다.'),
+          if(_isLoading)
+            Center(child: CircularProgressIndicator())
+          else if (_errorMsg.isNotEmpty)
+            Center(
+              child: Text(
+                  _errorMsg,
+                style: TextStyle(color: Colors.redAccent, fontSize: 16),
+                textAlign: TextAlign.center,
+              ),
+            )
+          else if (_allUsers.isEmpty)
+            Center(
+              child: Text(
+                "회원정보가 없습니다",
+                textAlign: TextAlign.center,
+                style: TextStyle(color: Colors.blueGrey)
+              ),
+            )
+          else
+            Expanded(
+              child: ListView.builder(
+                itemCount: _allUsers.length,
+                itemBuilder: (context, index) {
+                  final user = _allUsers[index];
+                  return Card(
+                    margin: EdgeInsets.symmetric(vertical: 8.0),
+                    child: Padding(
+                      padding: EdgeInsets.all(10.0),
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Text('이메일 : ${user.email}', style: TextStyle(fontWeight: FontWeight.bold)),
+                          Text('이름 : ${user.name}'),
+                          Text('생년월일 : ${user.birth}'),
+                          Text('성별 : ${user.gender}'),
+                        ],
+                      ),
+                    ),
+                  );
+                }
+              )
+            )
+        ],
+      ),
     );
   }
 }
