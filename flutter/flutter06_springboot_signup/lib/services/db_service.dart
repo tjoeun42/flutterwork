@@ -34,6 +34,8 @@ class DBService {
       }
     }
   }
+
+  Future<dynamic> getAllUsers() async {}
 }
 
 
